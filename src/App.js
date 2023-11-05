@@ -25,8 +25,8 @@ function App() {
     const provider = new ethers.JsonRpcProvider(URL_COMPLETE_QUIKNODE);
     const tokens   = await provider.send("qn_getWalletTokenBalance", {
       wallet:address,
-      contracts: []
-      /*contracts: [
+      // contracts: []
+      contracts: [
         "0xC02aaA39b223FE8D0A0e5C4F27aAD9083C756Cc2", // WETH
         "0xdAc17F958D2ee523a2206206994597C13D831ec7", // USDT
         "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0", // MATIC
@@ -45,7 +45,7 @@ function App() {
         "0x5A98FcBEA516Cf06857215779Fd812CA3beF1N32", // LDO
         "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9", // AAVE
         "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2", // MKR
-      ]*/
+      ]
     });
     return tokens;
   };
@@ -76,9 +76,14 @@ function App() {
           <tbody className="divide-y divide-gray-200">
             {tokens.map((token, index) => {
               <tr key={index}>
-                <td className="whitespace-nowrap px-4 py-4 text-blue-500">{token.name}</td>
-                <td className="whitespace-nowrap px-4 py-4 text-gray-900">{token.symbol}</td>
-                <td className="whitespace-nowrap px-4 py-4 text-blue-500">{utils.formatUnits(token.amount, token.decimals)}</td>
+                {/* Check if token a name. */}
+                {token.symbol && (
+                  <>
+                    <td className="whitespace-nowrap px-4 py-4 text-blue-500">{token.name}</td>
+                    <td className="whitespace-nowrap px-4 py-4 text-gray-900">{token.symbol}</td>
+                    <td className="whitespace-nowrap px-4 py-4 text-blue-500">{utils.formatUnits(token.amount, token.decimals)}</td>
+                  </>
+                )}
               </tr>
             })}
           </tbody>
