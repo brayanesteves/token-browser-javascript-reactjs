@@ -7,13 +7,17 @@ function App() {
   const CODE_QUIKNODE         = "1c9ef9b3fc5c4ef1ff622e2bf7c76bbb28c73a7"  
   const URL_COMPLETE_QUIKNODE = `${URL_QUIKNODE}/${CODE_QUIKNODE}/`;
   // State variables.
-  const [ tokens, setTokens]  = useState([]);
-  const [address, setAddress] = useState("");
+  const [       tokens, setTokens]        = useState([]);
+  const [      address, setAddress]       = useState("");
+  const [          eth, setEth]           = useState();
+  const [      history, setHistory]       = useState([]);
+  const [analyzedToken, setAnalyzedToken] = useState([]);
 
   // Handle form submission.
   const handleSubmit = (e) => {
     e.preventDefault();
     setAddress(address);
+    fetchEth();
     fetchTokens().then((data) => {
       setTokens(data.assets);
     }).catch((err) => setTokens([]));
@@ -50,6 +54,24 @@ function App() {
     return tokens;
   };
 
+  const fetchEth = async() => {
+    const provider = new ethers.JsonRpcProvider(URL_COMPLETE_QUIKNODE);
+    // Fetch 'ETH' balance.
+    const eth      = await provider.send("eth_getBalance", [address, "latest"]);
+    setEth(eth);
+  };
+
+  const tokenHistory = async(token) => {
+    const provider = new ethers.JsonRpcProvider(URL_COMPLETE_QUIKNODE);
+    const history  = await provider.send("qn_getWalletTokenTransactions", {
+      address:address,
+      contract:token,
+      page:1,
+      perPage:20,
+    });
+    setHistory(history.transfers);
+  };
+
   return (
     <div className="h-screen w-screen justify-center space-x-3 ml-5">
       
@@ -60,37 +82,52 @@ function App() {
         </form>
       </div>
 
-    {tokens.length > 0 && (
-      <div className="relative overflow-x-auto justify-center space-x-3 w-6/12 h-140 mt-10 mb-10">        
-        <h1 className="text-3xl font-bold">Tokens</h1>
-        <table className="min-w-full divide-y-4 divide-gray-200 text-sm">
-          
-          <thead>
-            <tr>
-              <th className="whitespace-nowrap px-4 py-4 text-left font-bold text-gray-1000">Name</th>
-              <th className="whitespace-nowrap px-4 py-4 text-left font-bold text-gray-900">Symbol</th>
-              <th className="whitespace-nowrap px-4 py-4 text-left font-bold text-gray-900">Balnce</th>
-            </tr>
-          </thead>
+      {eth && (
+        <div className="relative mt-10 text-gray-900">
+          ETH balance:&nbsp; <strong>{formatEther(eth)}</strong>
+        </div>
+      )}
 
-          <tbody className="divide-y divide-gray-200">
-            {tokens.map((token, index) => {
-              <tr key={index}>
-                {/* Check if token a name. */}
-                {token.symbol && (
-                  <>
-                    <td className="whitespace-nowrap px-4 py-4 text-blue-500">{token.name}</td>
-                    <td className="whitespace-nowrap px-4 py-4 text-gray-900">{token.symbol}</td>
-                    <td className="whitespace-nowrap px-4 py-4 text-blue-500">{utils.formatUnits(token.amount, token.decimals)}</td>
-                  </>
-                )}
+      {tokens.length > 0 && (
+        <div className="relative overflow-x-auto justify-center space-x-3 w-6/12 h-140 mt-10 mb-10">        
+          <h1 className="text-3xl font-bold">Tokens</h1>
+          <table className="min-w-full divide-y-4 divide-gray-200 text-sm">
+            
+            <thead>
+              <tr>
+                <th className="whitespace-nowrap px-4 py-4 text-left font-bold text-gray-1000">Name</th>
+                <th className="whitespace-nowrap px-4 py-4 text-left font-bold text-gray-900">Symbol</th>
+                <th className="whitespace-nowrap px-4 py-4 text-left font-bold text-gray-900">Balnce</th>
               </tr>
-            })}
-          </tbody>
+            </thead>
 
-        </table>
-      </div>
-    )}
+            <tbody className="divide-y divide-gray-200">
+              {tokens.map((token, index) => {
+                <tr key={index}>
+                  {/* Check if token a name. */}
+                  {token.symbol && (
+                    <>
+                      <td className="whitespace-nowrap px-4 py-4 text-blue-500">
+                        <button onClick={(e) => {
+                          e.preventDefault();
+                          tokenHistory(token.address);
+                        }}
+                        className="font-bold"
+                        >
+                          {token.name}
+                        </button>
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-4 text-gray-900">{token.symbol}</td>
+                      <td className="whitespace-nowrap px-4 py-4 text-blue-500">{utils.formatUnits(token.amount, token.decimals)}</td>
+                    </>
+                  )}
+                </tr>
+              })}
+            </tbody>
+
+          </table>
+        </div>
+      )}
 
     </div>
   );
