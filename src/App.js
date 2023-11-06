@@ -97,6 +97,7 @@ function App() {
                 <th className="whitespace-nowrap px-4 py-4 text-left font-bold text-gray-1000">From</th>
                 <th className="whitespace-nowrap px-4 py-4 text-left font-bold text-gray-900">To</th>
                 <th className="whitespace-nowrap px-4 py-4 text-left font-bold text-gray-900">Amount</th>
+                <th className="whitespace-nowrap px-4 py-4 text-left font-bold text-gray-900">Date</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -127,6 +128,12 @@ function App() {
 
                   <td className="px-4 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{formatUnits(item.amount, analyzedToken.decimals)}</div>                    
+                  </td>
+
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{item.date}</td>
+                  
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <a href={`https://etherscan.io/tx/${item.txHash}`} target="_blank" rel="noreferrer">[View on Etherscan]</a>
                   </td>
 
                 </tr>
