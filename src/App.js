@@ -90,7 +90,7 @@ function App() {
 
       {history.length > 0 && (
         <div className="relative overflow-x-auto justify-center space-x-3 w-10/12 h-140 my-10">
-          <h1 className="text-xl font-bold">Transaction history.</h1> 
+          <h1 className="text-xl font-bold">Transaction history for {analyzedToken.name}.</h1> 
           <table className="min-w-full divide-y-4 divide-gray-200 text-sm">
             <thead>
               <tr>
