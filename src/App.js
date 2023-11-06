@@ -88,6 +88,54 @@ function App() {
         </div>
       )}
 
+      {history.length > 0 && (
+        <div className="relative overflow-x-auto justify-center space-x-3 w-10/12 h-140 my-10">
+          <h1 className="text-xl font-bold">Transaction history.</h1> 
+          <table className="min-w-full divide-y-4 divide-gray-200 text-sm">
+            <thead>
+              <tr>
+                <th className="whitespace-nowrap px-4 py-4 text-left font-bold text-gray-1000">From</th>
+                <th className="whitespace-nowrap px-4 py-4 text-left font-bold text-gray-900">To</th>
+                <th className="whitespace-nowrap px-4 py-4 text-left font-bold text-gray-900">Amount</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {history.map((item, index) => {
+                <tr key={index}>
+
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 h-10 w-10">
+                        <img className="h-10 w-10 rounded-full" src={`https://robohash.org/item.from?set=set1`} alt="" />
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">{item.from}</div>                        
+                      </div>
+                    </div>
+                  </td>
+
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 h-10 w-10">
+                        <img className="h-10 w-10 rounded-full" src={`https://robohash.org.org/${item.to}?set=set1`} />                        
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">{item.to}</div>                        
+                      </div>
+                    </div>                    
+                  </td>
+
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{formatUnits(item.amount, analyzedToken.decimals)}</div>                    
+                  </td>
+
+                </tr>
+              })}
+            </tbody>
+          </table>         
+        </div>
+      )}
+
       {tokens.length > 0 && (
         <div className="relative overflow-x-auto justify-center space-x-3 w-6/12 h-140 mt-10 mb-10">        
           <h1 className="text-3xl font-bold">Tokens</h1>
